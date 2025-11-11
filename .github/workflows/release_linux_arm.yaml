@@ -1,4 +1,4 @@
-name: Build and upload release (macos)
+name: Build and upload release (linux)
 
 on:
   workflow_dispatch:
@@ -7,11 +7,11 @@ on:
 
 env:
   APP_NAME: gdrive
-  ARCHIVE_NAME: gdrive_macos-x64.tar.gz
+  ARCHIVE_NAME: gdrive_linux-arm64.tar.gz
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest-arm
 
     steps:
       - name: Checkout
@@ -24,8 +24,11 @@ jobs:
 
       - name: Build application
         run: |
-          cargo build --release
-          tar -czf $ARCHIVE_NAME -C target/release $APP_NAME
+          docker run --rm -t -v $HOME/.cargo/registry/:/root/.cargo/registry -v "$(pwd)":/volume clux/muslrust:stable cargo build --release
+
+      - name: Create archive
+        run: |
+          tar -czf $ARCHIVE_NAME -C target/x86_64-unknown-linux-musl/release $APP_NAME
 
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
