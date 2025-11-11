@@ -11,7 +11,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest-arm
+    runs-on: ubuntu-24.04-arm  # Migrate to ubuntu-latest-arm once available.
 
     steps:
       - name: Checkout
